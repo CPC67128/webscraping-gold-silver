@@ -1,6 +1,6 @@
 # webscraping-gold-silver
 
-Scrapes buy prices for gold and silver items from [gold-silver](https://www.achat-or-et-argent.fr) and stores them in a MariaDB database for historical tracking.
+Scrapes buy prices for gold and silver items from [achat-or-et-argent.fr](https://www.achat-or-et-argent.fr) and stores them in a MariaDB database for historical tracking.
 
 ## What it tracks
 
@@ -58,6 +58,8 @@ proxy =
 # Format: "Item display name" = "URL to scrape"
 "5 FRANCS SEMEUSE 1959-1969" = "https://www.achat-or-et-argent.fr/argent/5-francs-semeuse-1959-1969/22"
 "LINGOT 250G ARGENT"         = "https://www.achat-or-et-argent.fr/argent/lingot-250g-argent/3602"
+"20 FRANCS NAPOLÉON"         = "https://www.achat-or-et-argent.fr/or/20-francs-napoleon/6"
+"LINGOT 500G ARGENT"         = "https://www.achat-or-et-argent.fr/argent/lingot-500g-argent/3603"
 ```
 
 > `webscraping.conf` is listed in `.gitignore` and must **never** be committed to the repository.
