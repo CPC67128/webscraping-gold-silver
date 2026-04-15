@@ -23,7 +23,7 @@ DB_HOST     = _db_cfg["database"]["host"]
 DB_PORT     = int(_db_cfg["database"]["port"])
 DB_NAME     = _db_cfg["database"]["database"]
 
-ITEMS = {k.strip('"'): v.strip('"') for k, v in _db_cfg["achat-or-et-argent.fr"].items()}
+ITEMS = {k.strip('"'): v.strip('"') for k, v in _db_cfg["gold-silver"].items()}
 PROXY = _db_cfg.get("scraper", "proxy", fallback="").strip()
 
 br = mechanize.Browser()
