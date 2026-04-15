@@ -1,0 +1,6 @@
+# Database credentials — never commit this file
+webscraping.conf
+
+__pycache__/
+*.pyc
+*.pyo
