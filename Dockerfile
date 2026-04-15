@@ -13,6 +13,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY webscraping.py .
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
 
 # webscraping.conf is NOT copied here — it is injected at runtime as a Docker secret
 # mounted at /run/secrets/webscraping.conf
@@ -22,5 +24,5 @@ RUN echo "55 6 * * * root python /app/webscraping.py >> /proc/1/fd/1 2>> /proc/1
         > /etc/cron.d/webscraping \
     && chmod 0644 /etc/cron.d/webscraping
 
-# cron -f keeps cron in the foreground as PID 1
-CMD ["cron", "-f"]
+# Run an initial scrape on startup, then hand off to cron
+ENTRYPOINT ["/app/entrypoint.sh"]
