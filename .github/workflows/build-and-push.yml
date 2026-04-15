@@ -14,7 +14,7 @@ jobs:
 
     env:
       REGISTRY: 192.168.1.192:5000
-      IMAGE_NAME: webscraping-gold-silver
+      IMAGE_NAME: webscraping
       # Tag strategy: "latest" + short SHA for traceability
       TAG_LATEST: latest
 
