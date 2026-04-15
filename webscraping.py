@@ -51,6 +51,10 @@ def WebScrap(item, url):
             print("Unexpected error:", sys.exc_info()[0])
             itemValue = -1
 
+    # Remove French thousands separators (space and non-breaking space)
+    if itemValue != -1:
+        itemValue = itemValue.replace('\xa0', '').replace(' ', '')
+
     print(itemValue)
 
     if itemValue == -1:
