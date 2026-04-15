@@ -12,13 +12,13 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY webscraping.py .
+COPY webscraping-gold-silver.py .
 COPY webscraping.conf .
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
 # Run the scraper every day at 6:55 AM; redirect output to Docker logs via /proc/1/fd/1
-RUN echo "55 6 * * * root python /app/webscraping.py >> /proc/1/fd/1 2>> /proc/1/fd/2" \
+RUN echo "55 6 * * * root python /app/webscraping-gold-silver.py >> /proc/1/fd/1 2>> /proc/1/fd/2" \
         > /etc/cron.d/webscraping \
     && chmod 0644 /etc/cron.d/webscraping
 

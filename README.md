@@ -68,7 +68,7 @@ proxy =
 
 ```bash
 pip install -r requirements.txt
-python webscraping.py
+python webscraping-gold-silver.py
 ```
 
 The script looks for `webscraping.conf` in the same directory as itself.
@@ -124,7 +124,7 @@ To add it: **Repository → Settings → Secrets and variables → Actions → N
 
 ```
 .
-├── webscraping.py                 # Main scraper script
+├── webscraping-gold-silver.py                 # Main scraper script
 ├── entrypoint.sh                  # Runs initial scrape then starts cron
 ├── webscraping.conf               # Config and credentials (gitignored)
 ├── webscraping.conf.template      # Config template (committed)
