@@ -31,7 +31,7 @@ jobs:
           echo "TAG_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
           echo "IMAGE=${REGISTRY}/${IMAGE_NAME}" >> $GITHUB_ENV
 
-      - name: Write msmtp config
+      - name: Write webscraping config
         run: echo "${{ secrets.WEBSCRAPING_CONF_SECRET }}" > ./webscraping.conf
 
       - name: Build image (two tags)
