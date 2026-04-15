@@ -1,6 +1,5 @@
 .git
 .gitignore
-webscraping.conf
 webscraping.conf.template
 RREADME.md
 __pycache__
