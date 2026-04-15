@@ -54,7 +54,7 @@ database = web_scraping
 # HTTP proxy for debugging (e.g. 127.0.0.1:8080). Leave empty to disable.
 proxy =
 
-[items]
+[achat-or-et-argent.fr]
 # Format: "Item display name" = "URL to scrape"
 "5 FRANCS SEMEUSE 1959-1969" = "https://www.achat-or-et-argent.fr/argent/5-francs-semeuse-1959-1969/22"
 "LINGOT 250G ARGENT"         = "https://www.achat-or-et-argent.fr/argent/lingot-250g-argent/3602"
