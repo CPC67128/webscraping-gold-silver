@@ -4,6 +4,8 @@ Scrapes buy prices for gold and silver items from [achat-or-et-argent.fr](https:
 
 ## What it tracks
 
+Items to scrape are defined in `webscraping.conf` — no code change needed to add or remove items.
+
 | Item | URL |
 |---|---|
 | 5 Francs Semeuse 1959–1969 | /argent/5-francs-semeuse-1959-1969/22 |
@@ -31,9 +33,7 @@ CREATE TABLE ItemValueOverTime (
 
 ## Configuration
 
-Database credentials are **never hardcoded**. They are read at startup from a `webscraping.conf` file (INI format).
-
-Copy the template and fill in your values:
+All settings live in `webscraping.conf` (INI format). Copy the template and fill in your values:
 
 ```bash
 cp webscraping.conf.template webscraping.conf
@@ -49,9 +49,18 @@ password = your_db_password
 host     = 192.168.1.165
 port     = 3306
 database = web_scraping
+
+[scraper]
+# HTTP proxy for debugging (e.g. 127.0.0.1:8080). Leave empty to disable.
+proxy =
+
+[items]
+# Format: "Item display name" = "URL to scrape"
+"5 FRANCS SEMEUSE 1959-1969" = "https://www.achat-or-et-argent.fr/argent/5-francs-semeuse-1959-1969/22"
+"LINGOT 250G ARGENT"         = "https://www.achat-or-et-argent.fr/argent/lingot-250g-argent/3602"
 ```
 
-> `webscraping.conf` is listed in `.gitignore` and `.dockerignore` and must **never** be committed or baked into the image.
+> `webscraping.conf` is listed in `.gitignore` and must **never** be committed to the repository.
 
 ---
 
@@ -59,14 +68,16 @@ database = web_scraping
 
 ```bash
 pip install -r requirements.txt
-python webscraping-goldsilver.py
+python webscraping.py
 ```
 
-The script looks for `webscraping.conf` next to itself when no Docker secret is present.
+The script looks for `webscraping.conf` in the same directory as itself.
 
 ---
 
 ## Docker
+
+The container runs the scraper **once on startup**, then keeps running and fires again every day at **06:55** via an internal cron job. Logs are visible via `docker logs`.
 
 ### Build
 
@@ -74,15 +85,19 @@ The script looks for `webscraping.conf` next to itself when no Docker secret is 
 docker build -t webscraping-gold-silver .
 ```
 
-### Run (with secret file mounted)
+`webscraping.conf` must be present at build time — it is baked into the image.
+
+### Run
 
 ```bash
-docker run --rm \
-  --mount type=bind,source=/path/to/webscraping.conf,target=/run/secrets/webscraping.conf \
-  webscraping-gold-silver
+docker run -d --name webscraping webscraping-gold-silver
 ```
 
-At startup the script checks `/run/secrets/webscraping.conf` first, then falls back to a local `webscraping.conf`.
+### View logs
+
+```bash
+docker logs webscraping
+```
 
 ---
 
@@ -92,14 +107,14 @@ The workflow at [.github/workflows/build-and-push.yml](.github/workflows/build-a
 
 - Triggers on every push to `main`
 - Runs on a **self-hosted runner** (required for LAN access to the private registry at `192.168.1.192:5000`)
-- Reads `DB_CONF_SECRET` from GitHub Actions secrets, writes it to `webscraping.conf` before the build
-- Builds the image and pushes it as `192.168.1.192:5000/webscraping-gold-silver:latest`
+- Writes `webscraping.conf` from the `WEBSCRAPING_CONF_SECRET` GitHub Actions secret before building
+- Builds the image with the config baked in and pushes it as `192.168.1.192:5000/webscraping-gold-silver:latest`
 
 ### Required GitHub secret
 
 | Secret name | Content |
 |---|---|
-| `DB_CONF_SECRET` | Full contents of `webscraping.conf` |
+| `WEBSCRAPING_CONF_SECRET` | Full contents of `webscraping.conf` |
 
 To add it: **Repository → Settings → Secrets and variables → Actions → New repository secret**.
 
@@ -109,9 +124,10 @@ To add it: **Repository → Settings → Secrets and variables → Actions → N
 
 ```
 .
-├── webscraping-goldsilver.py      # Main scraper script
-├── webscraping.conf.template               # Config template (committed)
-├── webscraping.conf                        # Actual credentials (gitignored)
+├── webscraping.py                 # Main scraper script
+├── entrypoint.sh                  # Runs initial scrape then starts cron
+├── webscraping.conf               # Config and credentials (gitignored)
+├── webscraping.conf.template      # Config template (committed)
 ├── requirements.txt
 ├── Dockerfile
 ├── .dockerignore
